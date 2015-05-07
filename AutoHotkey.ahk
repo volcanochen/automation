@@ -632,7 +632,7 @@ repeatEsc()
 		  	{
 		  		log("found~ matchEndNext")
 		  			fifaClick(pid1, 1240,998)
-							soundbeep
+							;soundbeep
 		  	}else
 		  	{
 		  			sleep 1000
@@ -644,7 +644,7 @@ repeatEsc()
 		if (%interrupt% <> 0 )
 		{
 			;msgbox in %interrupt%
-			soundbeep
+			;soundbeep
 			clickNext(pid1)
 			return
 		}
@@ -657,8 +657,8 @@ repeatEsc()
 		  	if (findAndClick(pid1,"C:\Users\volcano\Desktop\FifaAuto\matchEndNext.png"))
 		  	{
 		  		 fifaClick(pid1, 1240,998)
-		  				soundbeep
-							soundbeep
+		  				;soundbeep
+							;soundbeep
 							return	
 		  	}
 		  	
@@ -669,8 +669,8 @@ repeatEsc()
 						;msgbox in %interrupt%
 						if (clickNext(pid1))
 						{
-							soundbeep
-							soundbeep
+							;soundbeep
+							;soundbeep
 							return
 						}else
 						{

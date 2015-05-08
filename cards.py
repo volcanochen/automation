@@ -1,19 +1,20 @@
 
 
-
-def getFileContent(filePathName):
-    fsourceFile = None
-    content = ''
-    try:
-        fsourceFile = open(filePathName)
-        content = fsourceFile.read()
-        #print(content)
-    except : 
-        print("Error: %s" % e)
-    finally:
-        if fsourceFile != None:
-            fsourceFile.close( )
-    return content   
+class rawFileHandle:
+    @staticmethod
+    def getFileContent(filePathName):
+        fsourceFile = None
+        content = ''
+        try:
+            fsourceFile = open(filePathName)
+            content = fsourceFile.read()
+            #print(content)
+        except : 
+            print("Error: %s" % e)
+        finally:
+            if fsourceFile != None:
+                fsourceFile.close( )
+        return content   
 
 
 #
@@ -121,16 +122,19 @@ class dataList():
         self.sdata = sd
         
     def insertSucData(self,id):
+        #print("insert %s"%id)
         self.suclist.append(id)
         
     def insertFailData(self,id):
         self.faillist.append(id)  
     def getData(self):
-        return "suc list: %s  \r\n fail list: %s"%(self.getSucDataString(),self.getFailDataString())
+        return "suc list: %s  \r\n fail list: "%(self.getSucDataString())
     def getSucDataString(self):
         str = ""
         for i in self.suclist:
-            str += "%d"%i  + " "
+            item = "%s"%self.sdata[i]
+            print(item)
+            str += "%s "%item
             #str += self.sdata[i] + " "
         return str
     
@@ -170,6 +174,7 @@ class analysisPattern:
                 continue
             
             if (result != "0"):
+                print("%s add %s"%(key,id))
                 self.list[key].insertSucData(id)
             else:
                 self.list[key].insertFailData(id)

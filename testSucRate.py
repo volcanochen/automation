@@ -4,7 +4,7 @@ def testcase1():
 
     print("xxxx")
 
-    file = "a"
+    file = "t"
     rawdata = rawFileHandle.getFileContent(file)
     srcD = sourceData(rawdata)
     

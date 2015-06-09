@@ -4,7 +4,7 @@ def testcase2():
 
     print("xxxx")
 
-    file = "a"
+    file = "t"
     rawdata = rawFileHandle.getFileContent(file)
     srcD = sourceData(rawdata)
     
@@ -16,6 +16,8 @@ def testcase2():
     
     print("===================== %s ================================="%file)
     print(aP.getPattern("24", 8))
+    print("===================== %s ================================="%file)
+    print(aP.getPattern("34", 8))
     
 
 

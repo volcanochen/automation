@@ -75,7 +75,7 @@ class anlaysisRate:
         self.anallist = {}
         self.MAX = 8
         print("anlaysisRate.__init__")
-        for i in range(1,self.MAX):
+        for i in range(0,self.MAX):
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)
                 #print(key)
@@ -104,6 +104,12 @@ class anlaysisRate:
 
             if key == '00':
                 continue
+            if int(first) > int(second):
+                temp = first
+                first = second
+                second = temp
+                key = first+second
+                
             #TODO: 234 is same with 324
             if result != '0':
                 self.anallist[key].sucPlus1()
@@ -202,6 +208,16 @@ class analysisPattern:
             
             if key == '00':
                 continue
+            
+            if int(first) > int(second):
+                temp = first
+                first = second
+                second = temp
+                key = first+second
+            
+            if first == "0":
+                continue
+            
             
             if (result != "0"):
                 #print("%s add %s"%(key,id))

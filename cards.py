@@ -15,15 +15,14 @@ class rawFileHandle:
             if fsourceFile != None:
                 fsourceFile.close( )
         return content   
-
-
 #
 # to record the source data
 #
 class sourceData:
-    # {1:'110',2:'223'}
-    srcdata = {}
+
     def __init__(self,rawData):
+        # {1:'110',2:'223'}
+        self.srcdata = {}
         print('sourceData.__init__')
         linenum = 0
         for line in rawData.split("\n"):
@@ -41,15 +40,14 @@ class sourceData:
         
     def getSize(self):
         return self.srcdata.__len__()
-    
-
 #
 # suc fail data structure
 #
 class SF_data:
-    sucnum = 0
-    failnum = 0
+
     def __init__(self):
+        self.sucnum = 0
+        self.failnum = 0
         pass
     def sucPlus1(self):
         self.sucnum += 1
@@ -70,13 +68,12 @@ class SF_data:
     def tostring(self):
         return '[%5d],  suc:%4d (%f), fail:%4d (%f) '%(self.sucnum+self.failnum, self.sucnum, self.sucRate(),self.failnum,self.failRate())
 
-
-
 class anlaysisRate:
-    anallist = {}
-    MAX = 8
+
     # {11: SF_data}
     def __init__(self):
+        self.anallist = {}
+        self.MAX = 8
         print("anlaysisRate.__init__")
         for i in range(1,self.MAX):
             for j in range(i,self.MAX):
@@ -114,11 +111,11 @@ class anlaysisRate:
                 self.anallist[key].failPlus1()
 
 class dataList():
-    suclist = []
-    faillist = []
+
     sdata = None
     def __init__(self, sd):
-        
+        self.suclist = []
+        self.faillist = []
         self.sdata = sd
         
     def insertSucData(self,id):
@@ -126,36 +123,69 @@ class dataList():
         self.suclist.append(id)
         
     def insertFailData(self,id):
+  
         self.faillist.append(id)  
+
     def getData(self):
-        return "suc list: %s  \r\n fail list: "%(self.getSucDataString())
-    def getSucDataString(self):
+        return "suc List: %s  \r\nfail List: %s"%(self.getSucData(),self.getFailData())
+    
+
+    def getSucId(self):
+        print("getSucId")
+        str = ''
+        for i in self.suclist:
+            temp = "%d "%(i)
+            str = str +temp
+        return str
+    def getFailId(self):
+        print("getFailId")
+        str = ''
+        for i in self.faillist:
+            temp = "%d "%(i)
+            str = str +temp
+        return str
+    def getSucData(self):
         str = ""
         for i in self.suclist:
-            item = "%s"%self.sdata[i]
-            print(item)
-            str += "%s "%item
-            #str += self.sdata[i] + " "
+            str += "%s "%self.sdata[i]
         return str
     
-    def getFailDataString(self):
-        str =""
+    def getFailData(self):
+        str = ""
         for i in self.faillist:
             str += self.sdata[i] + " "
         return str    
-
-  
+    def getFailPattern(self, size):
+        output = "total %d\r\n"%self.faillist.__len__()
+        for i in self.faillist:
+            j = i
+            str  = "["
+            while (j != 0 and j > i-size):
+                str += "%s "%self.sdata[j]
+                j -= 1
+            output += (str+"]\r\n")
+        return output  
+    def getSucPattern(self, size):
+        output = "total %d\r\n"%self.suclist.__len__()
+        for i in self.suclist:
+            j = i
+            str  = "["
+            while (j != 0 and j > i-size):
+                str += "%s "%self.sdata[j]
+                j -= 1
+            output += (str+"]\r\n")
+        return output    
 class analysisPattern:
-    list = {}
     MAX = 8
-
     def __init__(self, srcDATA):
+        self.patternList = {}
         print("anlaysisRate.__init__")
         for i in range(1,self.MAX):
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)
                 #print(key)
-                self.list[key] = dataList(srcDATA)
+                self.patternList[key] = dataList(srcDATA)
+                #print(self.patternList[key] )
         self.initData(srcDATA)
     
     def initData(self,src):
@@ -174,45 +204,40 @@ class analysisPattern:
                 continue
             
             if (result != "0"):
-                print("%s add %s"%(key,id))
-                self.list[key].insertSucData(id)
+                #print("%s add %s"%(key,id))
+                self.patternList[key].insertSucData(id)
             else:
-                self.list[key].insertFailData(id)
+                #print(key + " sdd %d"%id)
+                self.patternList[key].insertFailData(id)
+        #print(self.patternList["23"].getFailId())
       
     def getDataWithKey(self, key):
         str = ''
-        str += key[0] + " + " + key[1] + " " + self.list[key].getData()+ "\r\n"
-        return str    
-    def getData(self):
+        str += key[0] + " + " + key[1] + " \r\n" + self.patternList[key].getData()+ "\r\n"
+        return str 
+       
+    def getResult(self):
         str = ''
         for i in range(1,self.MAX):
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)
-                #print(key)
-                str += key[0] + " + " + key[1] + " " + self.list[key].getData()+ "\r\n"
-        return str    
+                print(self.getDataWithKey(key) + "\r\n")
                 
-def main():
-
-    print("xxxx")
-
-    file = "a"
-    rawdata = getFileContent(file)
-    srcD = sourceData(rawdata)
+        return str    
+    def getSucPattern(self, key, patternSize):
+        str = self.patternList[key].getSucPattern(patternSize)
+        return str 
     
-    aRate = anlaysisRate() 
-    aRate.initData(srcD)
+    def getFailPattern(self, key, patternSize):
+        str = self.patternList[key].getFailPattern(patternSize)
+        return str           
     
-    aP = analysisPattern(srcD.getData())
-
-    
-    print("===================== %s ================================="%file)
-    print(aRate.getData())
-    print("===================== %s ================================="%file)
-    print(aP.getDataWithKey("23"))
-    
-    print(srcD.getData()[1])
-
-
-if __name__ == '__main__':
-    main()
+    def getPattern(self, key, patternSize):
+        print("==============(%s + %s) list %d ================================="%(key[0],key[1],patternSize))
+        str = "suc: \r\n"
+        str += self.getSucPattern(key,patternSize)
+        str += "fail: \r\n"
+        str += self.getFailPattern(key,patternSize)       
+        return str
+        
+        

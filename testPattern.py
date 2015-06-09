@@ -12,9 +12,12 @@ def testcase2():
 
     
     print("===================== %s ================================="%file)
-    print(aP.getDataWithKey("23"))
+    #print(aP.getDataWithKey("23"))
     
-    print(srcD.getData()[1])
+    print("===================== %s ================================="%file)
+    print(aP.getPattern("24", 8))
+    
+
 
 
 if __name__ == '__main__':

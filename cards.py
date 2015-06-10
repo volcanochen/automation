@@ -161,7 +161,7 @@ class dataList():
         for i in self.faillist:
             str += self.sdata[i] + " "
         return str    
-    def getFailPattern(self, size):
+    def getFailPatternOutput(self, size):
         output = "total %d\r\n"%self.faillist.__len__()
         for i in self.faillist:
             j = i
@@ -171,7 +171,7 @@ class dataList():
                 j -= 1
             output += (str+"]\r\n")
         return output  
-    def getSucPattern(self, size):
+    def getSucPatternOutput(self, size):
         output = "total %d\r\n"%self.suclist.__len__()
         for i in self.suclist:
             j = i
@@ -181,6 +181,25 @@ class dataList():
                 j -= 1
             output += (str+"]\r\n")
         return output    
+    
+    #
+    def getPattern(self,size,SucFail):
+        datalist = []
+        if (SucFail == 1):
+            datalist = self.suclist
+        else:
+            datalist = self.faillist
+        output = []
+        for i in datalist:
+            j = i
+            lastN = []
+            while (j != 0 and j > i-size):
+                lastN.append(self.sdata[j])
+                j -= 1
+            output.append(lastN)
+        return output     
+          
+    
 class analysisPattern:
     MAX = 8
     def __init__(self, srcDATA):
@@ -240,20 +259,84 @@ class analysisPattern:
                 print(self.getDataWithKey(key) + "\r\n")
                 
         return str    
-    def getSucPattern(self, key, patternSize):
-        str = self.patternList[key].getSucPattern(patternSize)
+    def getSucPatternOutput(self, key, patternSize):
+        str = self.patternList[key].getSucPatternOutput(patternSize)
         return str 
     
-    def getFailPattern(self, key, patternSize):
-        str = self.patternList[key].getFailPattern(patternSize)
+    def getFailPatternOutput(self, key, patternSize):
+        str = self.patternList[key].getFailPatternOutput(patternSize)
         return str           
     
-    def getPattern(self, key, patternSize):
+    def getPatternOutput(self, key, patternSize):
         print("==============(%s + %s) list %d ================================="%(key[0],key[1],patternSize))
         str = "suc: \r\n"
-        str += self.getSucPattern(key,patternSize)
+        str += self.getSucPatternOutput(key,patternSize)
         str += "fail: \r\n"
-        str += self.getFailPattern(key,patternSize)       
+        str += self.getFailPatternOutput(key,patternSize)       
         return str
-        
-        
+    def analysisLastNPatternRate(self, anaalysiskey, lastN):
+        #1. get dat with key
+        matrixrate_suc = {}
+        matrix_suc = self.getPattern(anaalysiskey,lastN+1,1)
+        matrixrate_fail = {}
+        matrix_fail = self.getPattern(anaalysiskey,lastN+1,0)
+        #print matrix_suc
+        item = []
+        matrixlen_suc = len(matrix_suc)
+        matrixlen_fail = len(matrix_fail)
+        for item in matrix_suc:
+            #print item
+            keylen = lastN
+            key = ""
+            for i in range(keylen):
+                key += item[i+1]
+            #print key
+            if matrixrate_suc.get(key,-1) == -1:
+                matrixrate_suc[key] = 1
+            else:
+                matrixrate_suc[key] += 1
+        for item in matrix_fail:
+            #print item
+            keylen = lastN
+            key = ""
+            for i in range(keylen):
+                key += item[i+1]
+            #print key
+            if matrixrate_fail.get(key,-1) == -1:
+                matrixrate_fail[key] = 1
+            else:
+                matrixrate_fail[key] += 1
+        totalSucRate = "%.0f%%"%(float(matrixlen_suc*100)/(matrixlen_suc+matrixlen_fail))
+        print "======== %s %s rate last %d ======"%(anaalysiskey,totalSucRate,lastN)
+        printMap = []
+        for key in matrixrate_suc.keys():
+            printMapKey = matrixrate_suc[key]
+            keyData = "[%sx %s]"%(anaalysiskey,self.recoveryKey(key))
+            dataTryCnt = matrixrate_suc[key]
+            if matrixrate_fail.has_key(key):
+                sucRate = "%.0f%%"%(float(matrixrate_suc[key]*100)/(matrixrate_fail[key]+ matrixrate_suc[key]))
+                dataTryCnt+= matrixrate_fail[key]
+            else:
+                sucRate = "100%"
+            st = "%s : \t%d/%d \t%s"%(keyData,matrixrate_suc[key], dataTryCnt, sucRate)
+            printMap.append((printMapKey,st))
+        #print printMap
+        printMap.sort()
+        printMap.reverse()
+        for k in printMap:
+            print k[1]
+#         print "======== %s fail rate last %d ======"%(anaalysiskey,lastN)
+#         for key in matrixrate_fail.keys():
+#             print "[%s] : %d/%d"%(self.recoveryKey(key) ,  matrixrate_fail[key], matrixlen_fail)
+           
+    def recoveryKey(self,key):
+        rt = ""
+        for i in range(len(key)):
+            rt += key[i]
+            if (i%3 ==2):
+                rt += " "
+        return rt
+    def getPattern(self, key, Size , SucFail):
+        l = self.patternList[key].getPattern(Size,SucFail)
+        return l    
+  

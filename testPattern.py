@@ -15,11 +15,11 @@ def testcase2():
     #print(aP.getDataWithKey("23"))
     
     print("===================== %s ================================="%file)
-    print(aP.getPattern("24", 8))
+    #print(aP.getPatternOutput("23", 8))
     print("===================== %s ================================="%file)
-    print(aP.getPattern("34", 8))
+    #print(aP.getPatternOutput("13", 8))
     
-
+    aP.analysisLastNPatternRate("34",3)
 
 
 if __name__ == '__main__':

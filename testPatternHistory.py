@@ -1,25 +1,21 @@
 from cards import *
 
-def testcase1():
+def view():
 
     print("xxxx")
 
     f = ("a","b","c")
-    #f = ("a")
-    #f = ("b")
-    #f = ("c")
-    #f = ("b","c")
     rawdata = rawFileHandle.getFileListContent(f)
     srcD = sourceData(rawdata)
     
-    aRate = anlaysisRate() 
-    aRate.initData(srcD)
-    
+    aP = analysisPattern(srcD.getData())
+
     print("====================================================")
     print f
     print("====================================================")
-    print(aRate.getData())
+   
+    print(aP.getPatternOutput("33", 3))
 
 
 if __name__ == '__main__':
-    testcase1()
+    view()

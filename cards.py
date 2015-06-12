@@ -15,6 +15,22 @@ class rawFileHandle:
             if fsourceFile != None:
                 fsourceFile.close( )
         return content   
+    @staticmethod
+    def getFileListContent(fileList):
+        fsourceFile = None
+        content = ''
+        for f in fileList:
+            try:
+                fsourceFile = open(f)
+                content += fsourceFile.read()
+                #print(content)
+            except : 
+                print("Error: %s" % e)
+            finally:
+                if fsourceFile != None:
+                    fsourceFile.close( )
+        return content    
+        
 #
 # to record the source data
 #
@@ -66,7 +82,7 @@ class SF_data:
             rat = 0
         return rat 
     def tostring(self):
-        return '[%5d],  suc:%4d (%f), fail:%4d (%f) '%(self.sucnum+self.failnum, self.sucnum, self.sucRate(),self.failnum,self.failRate())
+        return '[%5d],  suc:%5d (%f), fail:%5d (%f) '%(self.sucnum+self.failnum, self.sucnum, self.sucRate(),self.failnum,self.failRate())
 
 class anlaysisRate:
 
@@ -270,9 +286,9 @@ class analysisPattern:
     def getPatternOutput(self, key, patternSize):
         print("==============(%s + %s) list %d ================================="%(key[0],key[1],patternSize))
         str = "suc: \r\n"
-        str += self.getSucPatternOutput(key,patternSize)
+        str += self.getSucPatternOutput(key,patternSize+1)
         str += "fail: \r\n"
-        str += self.getFailPatternOutput(key,patternSize)       
+        str += self.getFailPatternOutput(key,patternSize+1)       
         return str
     def analysisLastNPatternRate(self, anaalysiskey, lastN):
         #1. get dat with key
@@ -307,7 +323,7 @@ class analysisPattern:
             else:
                 matrixrate_fail[key] += 1
         totalSucRate = "%.0f%%"%(float(matrixlen_suc*100)/(matrixlen_suc+matrixlen_fail))
-        print "======== %s %s rate last %d ======"%(anaalysiskey,totalSucRate,lastN)
+        print "======== %sx %s rate last %d ======"%(anaalysiskey,totalSucRate,lastN)
         printMap = []
         for key in matrixrate_suc.keys():
             printMapKey = matrixrate_suc[key]

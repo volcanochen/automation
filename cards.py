@@ -24,7 +24,7 @@ class rawFileHandle:
                 fsourceFile = open(f)
                 content += fsourceFile.read()
                 #print(content)
-            except : 
+            except Exception, e: 
                 print("Error: %s" % e)
             finally:
                 if fsourceFile != None:
@@ -39,7 +39,7 @@ class sourceData:
     def __init__(self,rawData):
         # {1:'110',2:'223'}
         self.srcdata = {}
-        print('sourceData.__init__')
+        #print('sourceData.__init__')
         linenum = 0
         for line in rawData.split("\n"):
             if line == '':
@@ -73,14 +73,18 @@ class SF_data:
         if self.sucnum+self.failnum >0:
             rat = (0.0 + self.sucnum)/(self.sucnum+self.failnum)
         else:
-            rat = 0
+            rat = 0.0
         return rat 
     def failRate(self):
         if self.sucnum+self.failnum >0:
             rat = (0.0 + self.failnum)/(self.sucnum+self.failnum)
         else:
-            rat = 0
+            rat = 0.0
         return rat 
+    def sucNum(self):
+        return self.sucnum
+    def failNum(self):   
+        return self.failnum
     def tostring(self):
         return '[%5d],  suc:%5d (%f), fail:%5d (%f) '%(self.sucnum+self.failnum, self.sucnum, self.sucRate(),self.failnum,self.failRate())
 
@@ -90,20 +94,48 @@ class anlaysisRate:
     def __init__(self):
         self.anallist = {}
         self.MAX = 8
-        print("anlaysisRate.__init__")
+        #print("anlaysisRate.__init__")
         for i in range(0,self.MAX):
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)
                 #print(key)
                 self.anallist[key] = SF_data()
-    def getData(self):
-        str = ''
+    def showSucRateRanking(self):
+        mp = self.getDataIntoMapping()
+        mp = sorted(mp.iteritems(),key=lambda d:d[1], reverse = True)
+        for i in range(2,9):
+            print "list get %d:"%i
+            for xx in (mp):
+                it = xx[0]
+                #print it
+                m = 0
+                first = int(it[0])
+                second = int(it[1])
+                if second >= first:
+                    m = second
+                else:
+                    m = first
+            
+                if m+1 == i:
+                    print ("  %d+%d  \t %f"%(first,second, xx[1]))
+            print "---------------------------------"          
+    def getDataIntoMapping(self):
+        rateSucMappig = {}
         for i in range(1,self.MAX):
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)
                 #print(key)
-                str += key[0] + " + " + key[1] + " " + self.anallist[key].tostring()+ "\r\n"
-        return str
+                rateSucMappig[key] = self.anallist[key].sucRate()
+        return rateSucMappig
+                
+    def getDataString(self):
+        st = ''
+        for i in range(1,self.MAX):
+            for j in range(i,self.MAX):
+                key = '%d%d'%(i,j)
+                #print(key)
+                st += key[0] + " + " + key[1] + " " + self.anallist[key].tostring()+ "\r\n"
+        return st
 
     def initData(self, srcData):
 
@@ -220,7 +252,7 @@ class analysisPattern:
     MAX = 8
     def __init__(self, srcDATA):
         self.patternList = {}
-        print("anlaysisRate.__init__")
+        #print("anlaysisRate.__init__")
         for i in range(1,self.MAX):
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)

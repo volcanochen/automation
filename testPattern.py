@@ -5,6 +5,7 @@ def view():
     print("xxxx")
 
     f = ("a","b","c")
+    f = ("c")
     rawdata = rawFileHandle.getFileListContent(f)
     srcD = sourceData(rawdata)
     
@@ -18,7 +19,7 @@ def view():
     #print(aP.getPatternOutput("23", 8))
     #print(aP.getPatternOutput("13", 8))
     
-    aP.analysisLastNPatternRate("33",3)
+    aP.analysisLastNPatternRate("24",4)
 
 
 if __name__ == '__main__':

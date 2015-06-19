@@ -18,7 +18,7 @@ def testcase1():
     print("====================================================")
     print f
     print("====================================================")
-    print(aRate.getData())
+    print(aRate.getDataString())
 
 
 if __name__ == '__main__':

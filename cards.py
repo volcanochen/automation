@@ -107,6 +107,7 @@ class anlaysisRate:
             print "list get %d:"%i
             for xx in (mp):
                 it = xx[0]
+                data = xx[1]
                 #print it
                 m = 0
                 first = int(it[0])
@@ -117,7 +118,7 @@ class anlaysisRate:
                     m = first
             
                 if m+1 == i:
-                    print ("  %d+%d  \t %f"%(first,second, xx[1]))
+                    print ("  %d+%d  \t %f  (%d/%d)"%(first,second, data[0],data[1],data[2]))
             print "---------------------------------"          
     def getDataIntoMapping(self):
         rateSucMappig = {}
@@ -125,7 +126,7 @@ class anlaysisRate:
             for j in range(i,self.MAX):
                 key = '%d%d'%(i,j)
                 #print(key)
-                rateSucMappig[key] = self.anallist[key].sucRate()
+                rateSucMappig[key] = [self.anallist[key].sucRate(),self.anallist[key].sucNum(),self.anallist[key].sucNum()+self.anallist[key].failNum()]
         return rateSucMappig
                 
     def getDataString(self):

@@ -19,11 +19,10 @@ def loadData(f):
 def overall( srcD):
     aRate = anlaysisRate() 
     aRate.initData(srcD)
+
+    print(aRate.getDataString())
     
-    print("====================================================")
-    #print f
-    print("====================================================")
-    print(aRate.getData())
+    aRate.showSucRateRanking()
 def help():
     print "===== command list: =============="
     print "o[verall]"
@@ -48,13 +47,8 @@ def mainLoop():
         if re.match(r'help', x):
             help()
         elif re.match(r'o|overall', x):
-            aRate = anlaysisRate() 
-            aRate.initData(srcD)
 
-            print(aRate.getDataString())
-            
-            aRate.showSucRateRanking()
-             
+            overall( srcD)
                              
                 
         elif re.match(r'load\s+|l\s+', x):

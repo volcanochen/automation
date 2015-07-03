@@ -16,19 +16,36 @@ def loadData(f):
         print "load failed."
         return -1
 
-def overall( srcD):
+def handleOverall( srcD):
     aRate = anlaysisRate() 
     aRate.initData(srcD)
 
     print(aRate.getDataString())
     
     aRate.showSucRateRanking()
+    
+    
+def handleLoad(cmd, parm):
+    ss = None
+    m  = re.match(r'\w+\s+(.*)', cmd)
+    f = m.group(1)
+    f = re.sub(r' ','',f)
+    flist = re.split(r',',f)
+    if  flist.__len__() < 1:
+        print "parameters missing."
+        return None
+    ss = loadData(flist)
+    if (ss != -1):
+        parm[1] = flist.__str__()
+        parm[0] =  ss
+    
+   
 def help():
     print "===== command list: =============="
     print "o[verall]"
     print "    eg: o"
-    print "l[oad] a[,b,c]"
-    print "    eg: l a,b,c"
+    print "l[oad] a[,b,c] [-]<N>"
+    print "    eg: l a,b,c 100"
     print "p[attern] <2 cards>,<lastN>"
     print "    eg: p 23,5"
     print "v[iew] <2 cards>,<lastN>"
@@ -47,24 +64,23 @@ def mainLoop():
         if re.match(r'help', x):
             help()
         elif re.match(r'o|overall', x):
-
-            overall( srcD)
+            ######## 1 ###########
+            handleOverall( srcD)
                              
                 
         elif re.match(r'load\s+|l\s+', x):
-            m  = re.match(r'\w+\s+(.*)', x)
-            f = m.group(1)
-            f = re.sub(r' ','',f)
-            flist = re.split(r',',f)
-            if  flist.__len__() < 1:
-                print "parameters missing."
-                continue
-               
-            ss = loadData(flist)
-            if (ss != -1):
-                srcD = ss
-                prompt = flist.__str__()
+            ######## 2 ###########
+            print id(prompt)
+            
+            parm = [srcD,prompt]
+            handleLoad(x, parm)
+            
+            print id(parm[1])
+            prompt = parm[1]
+            srcD = parm[0]
+            
         elif re.match(r'v\s+|view\s+', x):
+            ######## 3 ###########
             m  = re.match(r'\w+\s+(.*)', x)
             f = m.group(1)
             f = re.sub(r' ','',f)
@@ -75,6 +91,7 @@ def mainLoop():
             aP = analysisPattern(srcD.getData())
             print(aP.getPatternOutput(mlist[0], int(mlist[1])))
         elif re.match(r'p\s+|pattern\s+', x):
+            ######## 4 ###########
             m  = re.match(r'\w+\s+(.*)', x)
             f = m.group(1)
             f = re.sub(r' ','',f)

@@ -39,7 +39,29 @@ def handleLoad(cmd, parm):
         parm[1] = flist.__str__()
         parm[0] =  ss
     
-   
+def handleView(cmd,srcD):
+    m  = re.match(r'\w+\s+(.*)', cmd)
+    f = m.group(1)
+    f = re.sub(r' ','',f)
+    mlist = re.split(r',',f)
+    if  mlist.__len__() < 2:
+        print "parameters missing."
+        return -1
+    aP = analysisPattern(srcD.getData())
+    print(aP.getPatternOutput(mlist[0], int(mlist[1])))
+    
+def handlePattern(cmd,srcD):
+    m  = re.match(r'\w+\s+(.*)', cmd)
+    f = m.group(1)
+    f = re.sub(r' ','',f)
+    mlist = re.split(r',',f)
+    
+    if  mlist.__len__() < 2:
+        print "parameters missing."
+        return -1
+    aP = analysisPattern(srcD.getData())
+    aP.analysisLastNPatternRate(mlist[0], int(mlist[1]))
+    
 def help():
     print "===== command list: =============="
     print "o[verall]"
@@ -51,6 +73,8 @@ def help():
     print "v[iew] <2 cards>,<lastN>"
     print "    eg: v 23,5"
     print "=================================" 
+    
+    
 def mainLoop():
 
     print("xxxx")
@@ -70,39 +94,19 @@ def mainLoop():
                 
         elif re.match(r'load\s+|l\s+', x):
             ######## 2 ###########
-            print id(prompt)
-            
             parm = [srcD,prompt]
             handleLoad(x, parm)
-            
-            print id(parm[1])
             prompt = parm[1]
             srcD = parm[0]
             
         elif re.match(r'v\s+|view\s+', x):
             ######## 3 ###########
-            m  = re.match(r'\w+\s+(.*)', x)
-            f = m.group(1)
-            f = re.sub(r' ','',f)
-            mlist = re.split(r',',f)
-            if  mlist.__len__() < 2:
-                print "parameters missing."
-                continue
-            aP = analysisPattern(srcD.getData())
-            print(aP.getPatternOutput(mlist[0], int(mlist[1])))
+            handleView(x,srcD)
+
         elif re.match(r'p\s+|pattern\s+', x):
             ######## 4 ###########
-            m  = re.match(r'\w+\s+(.*)', x)
-            f = m.group(1)
-            f = re.sub(r' ','',f)
-            mlist = re.split(r',',f)
-            
-            if  mlist.__len__() < 2:
-                print "parameters missing."
-                continue
-            
-            aP = analysisPattern(srcD.getData())
-            aP.analysisLastNPatternRate(mlist[0], int(mlist[1]))
+            handlePattern(x,srcD)
+
 
 
 if __name__ == '__main__':

@@ -6,6 +6,14 @@
 ;
 ;
 
+#SingleInstance force
+
+
+;============================================================================
+;  
+; log function
+; 
+;============================================================================
 log(text)
 {
 	writeLog(text)
@@ -24,13 +32,13 @@ writeLog(text)
 }
 
 
-
+;============================================================================
 ; ------ 0001 -------
 ; Assign Ctrl-Alt-R as a hotkey to restart the script.
-;
+;============================================================================
 ^!r::
 {
-	SplashTextOn, 400, 50, !!,  `rReload script !!!!! wait~
+	SplashTextOn, 400, 150, !!,  `rReload script !!!!! wait~ `r ==========================`r %A_ScriptName%  
 	Sleep, 1000
 	SplashTextOff
 	reload ;   Assign Ctrl-Alt-R as a hotkey to restart the script.
@@ -39,90 +47,105 @@ writeLog(text)
 	IfMsgBox, Yes, Edit
 	return
 }
-; --- 0002 ----
-;volcano
-; WIN + Z:  1.start the everything, if not started.
-; 2. toggle the search windows.
-;
-#z::
-{
-IfWinExist Everything
-{
-	IfWinActive, Everything
-	{
-		WinMinimize  
-	}else{
-		WinActivate
-		;Hotkey, #z, Off  ; disables the hotkey
-	}
-}
-else{
-	Run %ProgramFiles%\Everything\Everything.exe
-	;Hotkey, #z, Off  ; disables the hotkey
-}
-return
-}
 
 
-; ---- 0003 text auto-----
-;
-::btw::by the way
-:*b0:<em>::</em>{left 5}
 
-
-#q::
-test()
-test()
-{
-	
-	WinGet, active_id, PID, ahk_class FIFANG
-  pid1 := active_id
-  cleanUp(pid1)
-  if ( 	 findAndClick(pid1,"C:\Users\volcano\Desktop\FifaAuto\matchEndNext.png"))
-	    {
-				soundbeep
-				soundbeep
-				return	
-	}
-	if (findAndClick(pid1,"C:\Users\volcano\Desktop\FifaAuto\playoff.png"))
-	{
-	    log("accept result")
-	    fifaClick(pid1, 1240,998)
-	}
-	return	
-}
-return
-
+;============================================================================
 ;  -------  8001 -------
 ;  ---- fifa online lauch auto----
-;
-#o::
-
-define()
-loginFifaAccout(account1,pass1)
-return
-#p::
-define()
-loginFifaAccout(account2,pass2)
-return
-
-define()
+;============================================================================
+		
+		
+;============================================================================
+; global variables
+;============================================================================			
+globalDef()
 {
 	global fifaWinName 
 	fifaWinName  := "FIFA Online 3登录程序"
-  global account1 := "45376928"
-  global pass1 := "287421.,nehc333"
-  global pid1 :=  0
+	global account1 := "45376928"
+	global pass1 := "287421.,nehc333"
+	global pid1 :=  0
   
-  global account2 := "798010623"
-  global pass2 := "220985WuYi"
-  global pid2 := 0
+	global account2 := "798010623"
+	global pass2 := "220985WuYi"
+	global pid2 := 0
   
-  global secondFlag := 0
+	global secondFlag := 0
   
 	;MsgBox test define %fifaWinName% 
 }
+;============================================================================
+; log function - via tencent Game Platform
+;============================================================================	
+^!1::
+loginViaTGP()
+return
 
+loginViaTGP()
+{
+	tgpPath = "D:\Program Files\Tencent\TGP\tgp_daemon.exe"
+	tgpPath_pre_title = "腾讯游戏平台"
+	tgpPreWin_ahkclass = ahk_class TWINCONTROL
+	tgpPrePasswordControl_ahkclass = ahk_class Edit
+	
+	Run %tgpPath%
+		
+	while (!(WinExist(tgpPreWin_ahkclass) AND  WinExist(tgpPrePasswordControl_ahkclass)))
+	{
+		sleep 1000
+	}
+	
+	if (isTGPPrewin()){
+	;first start
+		WinActivate tgpPreWin_ahkclass
+		WinActivate tgpPrePasswordControl_ahkclass
+		
+		;339,73
+		;85,-33
+		;357,114
+		;ahk_class Edit
+		MouseClick, left,85,-33, 2
+	}else{
+		
+		
+	}
+}
+isTGPPrewin(){
+	return 1
+}
+
+;============================================================================
+; log function
+;============================================================================		
+#o::
+globalDef()
+loginFifaAccout(account1,pass1)
+return
+		
+#p::
+globalDef()
+loginFifaAccout(account2,pass2)
+return
+
+loginFifaAccout(account1,pass1)
+{
+	if fifaLoginOn()
+	{
+	    WinActivate
+	}
+	else
+	{
+	    lauchFifa()
+	    ;MsgBox test lauchFifa
+	}
+	if readyToInputFifa()
+	{
+	   ;MsgBox loginFifa
+		loginFifa(account1,pass1)
+	}
+	return
+}
 fifaLoginOn()
 {	
 	global fifaWinName 
@@ -134,9 +157,19 @@ fifaLoginOn()
 	{
 		return false
 	}
+}
+lauchFifa()
+{
+  global fifaWinName
+  global pid1
+  Run D:\FIFA Online 3\TCLS\Client.exe
+
+  ;MsgBox test lauchFifa before wait %fifaWinName%
+  WinWait  %fifaWinName%
+  WinGet, active_id, PID, %fifaWinName%
+  pid1 := active_id
 
 }
-
 readyToInputFifa()
 {
 	;MsgBox test readyToInputFifa
@@ -155,29 +188,8 @@ readyToInputFifa()
 	;SoundBeep 
 	sleep 2000
 	;SoundBeep  
-
 	return true
 }
-
-lauchFifa()
-{
-  global fifaWinName
-  global pid1
-  Run D:\FIFA Online 3\TCLS\Client.exe
-
-  ;MsgBox test lauchFifa before wait %fifaWinName%
-  WinWait  %fifaWinName%
-  WinGet, active_id, PID, %fifaWinName%
-  pid1 := active_id
-
-}
-
-
-waitGameWin()
-{
-   WinWait ahk_class FIFANG
-}
-
 loginFifa(a, p)
 {
   account := a
@@ -186,9 +198,7 @@ loginFifa(a, p)
 	{
 		WinActivate
     WinWait  %fifaWinName%
-
 		sleep 1000
-
     click 981,387, 0
     sleep 1000
     click 2
@@ -203,37 +213,14 @@ loginFifa(a, p)
 		sleep 2000
     click 2
 		SoundBeep  
-
-
 		waitGameWin()
-
-
 		SoundBeep  
 
 	}
-
-
 }
-
-loginFifaAccout(account1,pass1)
+waitGameWin()
 {
-	
-	if fifaLoginOn()
-	{
-	    WinActivate
-	}
-	else
-	{
-	    lauchFifa()
-	    ;MsgBox test lauchFifa
-	}
-	
-	if readyToInputFifa()
-	{
-	   ;MsgBox loginFifa
-		loginFifa(account1,pass1)
-	}
-	return
+   WinWait ahk_class FIFANG
 }
 
 

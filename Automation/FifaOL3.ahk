@@ -1,54 +1,240 @@
-;
-;ctrl -> ^
-;alt ->  !
-;win ->  #
-;shelf -> +
-;
-;
-
 #SingleInstance force
 
+#Include C:\Users\volcano\git\fifaOnlineScript\Automation\common\common.ahk
 
-;============================================================================
-;  
-; log function
-; 
-;============================================================================
-log(text)
+#q::
 {
-	writeLog(text)
-	if (true)
+	account1 := "45376928"
+	account2 := "798010623"
+	account3 := "2926133917"
+	account4 := "2990124579"
+	account5 := "3252739241"
+	cipherPassFile1 := "password1" ; for minor account
+	cipherPassFile2 := "password2" ; for 4537
+	cipherPassFile3 := "password3" ; for 7980
+	
+	
+	TGP.loginTGP(account1,cipherPassFile2)
+
+	return
+
+}
+
+class PASSWORD
+{
+	
+	static cryptTool := "D:\+downs\crypt_file\openssl.exe"
+	
+	decrypt(cipherPassFile1)
 	{
-		SplashTextOn, 400, 50, splash log: ,  `r%text%
-		Sleep, 1000
-		SplashTextOff
+		workingDirectory := "C:\Users\volcano\git\fifaOnlineScript\Automation\"
+		tempfile := workingDirectory . cipherPassFile1
+		tempfileO := workingDirectory . "xxxxxxtempoxxxx"
+		
+		com := this.cryptTool " enc -aes128  -d -in " tempfile " -out " tempfileO " -k volcano"
+		;MsgBox % com
+		run % com
+		str := ""
+		file := FileOpen(tempfileO, "rw")
+		str := file.read()
+		file.Close()
+		;for security
+		file := FileOpen(tempfileO, "w")
+		file.write("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+		file.Close()
+		;MsgBox % str
+		FileDelete, % tempfileO
+	
+		return str
 	}
 
+
 }
-writeLog(text)
+
+
+class TGP
 {
-	fileName := A_Desktop . "\Log_" . A_ScriptName . ".txt"
-	FileAppend,%A_Now% %text%`n,  %fileName%
+	static path := "D:\Program Files\Tencent\TGP\tgp_daemon.exe"
+	static login_title := "腾讯游戏平台"
+	static login_ahkclass := "ahk_class TWINCONTROL"
+	
+	;login stage
+	static login_w:=  514
+	static login_h:= 264
+	
+	;main window stage
+	static mw_w:= 282
+	static mw_h:= 717
+	
+	;minimized 
+	static min_h :=  27
+	
+	isStarted()
+    {
+		rt := 0
+		if (WinExist(TGP.login_ahkclass)){
+			rt := 1
+		}
+        return rt
+    }
+	
+	; 0: not started
+	; 1: login stage
+	; 2: main stage
+	; 3: minimized
+	getState()
+	{
+		if (TGP.isStarted()){
+			WinGetPos , X, Y, Width, Height, % TGP.login_ahkclass
+			;MsgBox % X  "  "   Y  "  "  Width "  "    Height
+			if (Height == TGP.mw_h ){
+				return 2
+			}
+			if (Height == TGP.login_h){
+				return 1
+			}
+			if (Height == TGP.min_h){
+				return 3
+			}
+		}
+		return 0
+	}
+	
+	loginTGP(account, passfile)
+	{
+		if (this.getState() == 0)
+		{
+			run % TGP.path
+			passControl := "ahk_class Edit"
+
+			WinWait %passControl% , , 60
+			if ErrorLevel
+			{
+				log("WinWait timed out.")
+				return
+			}
+			;run to login stage
+			sleep 1000
+			this.loginTGP(account, passfile)
+		}else if (this.getState() == 1){
+			;MsgBox stage login
+			;splshow ("in")
+			sleep 1000
+			mouseClick , left,6,-34,2
+			sleep 1000
+			send , %account%
+			sleep 500
+			
+			isPasswordDone := 0
+			PixelGetColor,OutputVar , 314,119
+			
+			if (OutputVar == "0xFFFFFF"){
+			
+				isPasswordDone = 1
+			}else{
+				MsgBox ERROR
+			}
+			
+			if (isPasswordDone){
+				
+				mouseClick , left,381,214
+				Sleep 10000
+				this.loginTGP(account, passfile)
+			}
+
+		}else if (this.getState() == 2){
+		
+			mouseClick , left,-157,223
+		
+		}
+	
+	}
+
+	
+
 }
 
-
-;============================================================================
-; ------ 0001 -------
-; Assign Ctrl-Alt-R as a hotkey to restart the script.
-;============================================================================
-^!r::
+threadswitch()
 {
-	SplashTextOn, 400, 150, !!,  `rReload script !!!!! wait~ `r ==========================`r %A_ScriptName%  
-	Sleep, 1000
-	SplashTextOff
-	reload ;   Assign Ctrl-Alt-R as a hotkey to restart the script.
-	;error handling:
-	MsgBox, 4,, The script could not be reloaded. Would you like to open it for editing?
-	IfMsgBox, Yes, Edit
-	return
+
+	CoordMode, Mouse, Screen  ; 
+  while(1)
+  {
+	  click 1137,37
+    	   sleep 20000
+
+	  click 1505,139
+    	   sleep 20000
+
+	  click 1872,248
+    	   sleep 20000
+  }	
+
 }
 
+buy()
+{
 
+  while(1)
+  {
+	  click 1085,518
+    	   sleep 100
+
+	  click 614,521
+    	   sleep 100
+
+	  click 742,791
+    	   sleep 200
+
+	  click 742,791
+    	   sleep 100
+  }
+}
+
+dafuweng()
+{
+
+  while(1)
+  {
+	  click 1085,518
+    	   sleep 100
+
+	  click 614,521
+    	   sleep 100
+
+	  click 742,791
+    	   sleep 200
+
+	  click 742,791
+    	   sleep 100
+  }
+}
+
+test()
+{
+  while(1)
+  {
+	  click 1085,518
+    	   sleep 100
+
+	  click 614,521
+    	   sleep 100
+
+	  click 742,791
+    	   sleep 200
+
+	  click 742,791
+    	   sleep 100
+
+	  ;WinGet, active_id, PID, ahk_class FIFANG
+;SendPlay Joy1 
+;ControlSend ,active_id,Joy1,,,,
+
+
+	}
+
+
+}
 
 ;============================================================================
 ;  -------  8001 -------
@@ -64,11 +250,11 @@ globalDef()
 	global fifaWinName 
 	fifaWinName  := "FIFA Online 3登录程序"
 	global account1 := "45376928"
-	global pass1 := "287421.,nehc333"
+	global pass1 := ""
 	global pid1 :=  0
   
 	global account2 := "798010623"
-	global pass2 := "220985WuYi"
+	global pass2 := ""
 	global pid2 := 0
   
 	global secondFlag := 0

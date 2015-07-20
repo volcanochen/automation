@@ -8,7 +8,7 @@ reloadCurrentScript(text:= "")
 	
 	splshow("Reload script !!!!! wait~ `r ==========================`r " A_ScriptName " `r " text)
 
-	reload ;   Assign Ctrl-Alt-R as a hotkey to restart the script.
+	reload 
 	return
 }
 ;========================================
@@ -107,6 +107,36 @@ splshow(text)
 	SplashTextOn, number*10, line*38, !!,  `r  %text% ;%line% %number%
 	Sleep, 1000
 	SplashTextOff
+}
+
+
+;========================================
+;
+;========================================
+shadowClick(X, Y)
+{
+    ;in case user is using mouse
+    keywait LButton
+    keywait RButton
+    
+    
+    CoordMode, Mouse, Screen
+    SendMode Input
+    
+    ;stop user moving
+    BlockInput  MouseMove
+    
+    MouseGetPos, OutputVarX, OutputVarY, MouseWin, OutputVarControl
+    winGet,active_win_ID ,ID, A
+    
+    ;action
+    MouseClick , left , X, Y, 1, 0
+    
+    ;restore
+    WinActivate, ahk_id %active_win_ID%
+    MouseMove, OutputVarX, OutputVarY, 0
+
+    BlockInput  MouseMoveOff
 }
 
 

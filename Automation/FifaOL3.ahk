@@ -4,20 +4,50 @@
 
 #q::
 {
-	account1 := "45376928"
-	account2 := "798010623"
-	account3 := "2926133917"
-	account4 := "2990124579"
-	account5 := "3252739241"
-	cipherPassFile1 := "password1" ; for minor account
-	cipherPassFile2 := "password2" ; for 4537
-	cipherPassFile3 := "password3" ; for 7980
-	
-	
-	TGP.loginTGP(account1,cipherPassFile2)
+
+	;MsgBox % ACCOUNT.getCID(ACCOUNT.account5)
+	TGP.loginTGP(MY_ACCOUNT.account4,MY_ACCOUNT.cipherPassFile1)
 
 	return
 
+}
+
+class MY_ACCOUNT
+{
+	static account1 := "45376928"
+	static account2 := "798010623"
+	static account3 := "2926133917"
+	static account4 := "2990124579"
+	static account5 := "3252739241"
+	static cipherPassFile1 := "password1" ; for minor account
+	static cipherPassFile2 := "password2" ; for 4537
+	static cipherPassFile3 := "password3" ; for 7980
+	static Account1_figure_cid := "0xFEFEFE 0xEDE7E0"
+	static Account2_figure_cid := "0x65ABE7 0x7EB7E4"
+	static Account3_figure_cid := "0x2574B3 0xBDBEC2"
+	static Account4_figure_cid := "0x070A0F 0x0B1527"
+	static Account5_figure_cid := "0x4C759C 0x5F88AF"
+
+
+	getCID(name){
+		;MsgBox % " " name
+		if (name == MY_ACCOUNT.account1){
+			return MY_ACCOUNT.Account1_figure_cid
+		}
+		if (name == MY_ACCOUNT.account2){
+			return MY_ACCOUNT.Account2_figure_cid
+		}
+		if (name == MY_ACCOUNT.account3){
+			return MY_ACCOUNT.Account3_figure_cid
+		}
+		if (name == MY_ACCOUNT.account4){
+			return MY_ACCOUNT.Account4_figure_cid
+		}
+		if (name == MY_ACCOUNT.account5){
+			return MY_ACCOUNT.Account5_figure_cid
+		}
+	 return
+	}
 }
 
 class PASSWORD
@@ -55,7 +85,7 @@ class PASSWORD
 class TGP
 {
 	static path := "D:\Program Files\Tencent\TGP\tgp_daemon.exe"
-	static login_title := "腾讯游戏平台"
+	static title := "腾讯游戏平台"
 	static login_ahkclass := "ahk_class TWINCONTROL"
 	
 	;login stage
@@ -102,11 +132,17 @@ class TGP
 	
 	loginTGP(account, passfile)
 	{
-		if (this.getState() == 0)
+		currntState := this.getState()
+		if ( currntState == 0)
 		{
+			log("loginTGP state  0 @not existed")
 			run % TGP.path
+			
+			sleep 1000
+			return this.loginTGP(account, passfile)
+		}else if (currntState == 1){
+			log("loginTGP state  1 @ login screen")
 			passControl := "ahk_class Edit"
-
 			WinWait %passControl% , , 60
 			if ErrorLevel
 			{
@@ -114,9 +150,9 @@ class TGP
 				return
 			}
 			;run to login stage
-			sleep 1000
-			this.loginTGP(account, passfile)
-		}else if (this.getState() == 1){
+		
+			WinActivate 
+			
 			;MsgBox stage login
 			;splshow ("in")
 			sleep 1000
@@ -139,13 +175,49 @@ class TGP
 				
 				mouseClick , left,381,214
 				Sleep 10000
-				this.loginTGP(account, passfile)
+				return this.loginTGP(account, passfile)
 			}
 
-		}else if (this.getState() == 2){
+		}else if (currntState == 2){
+			log("loginTGP state  2 @ main screen")
+			WinActivate  % TGP.login_ahkclass
+			;WinActivate % TGP.Title ; still the same
+			WinGetTitle, t , % TGP.login_ahkclass
+			
+			if (t = ""){
+				;close it
+				mouseClick , left,726,16
+				Sleep 1000
+			}
+			
+			;mouseClick , left,130,250
+	
+			PixelGetColor,OutputVar , 15,61
+			PixelGetColor,OutputVar2 , 18,61
+			cid := % OutputVar " " OutputVar2
+			tcid :=  MY_ACCOUNT.getCID(account)
+			log(tcid  " = " cid)
+			if (  cid == tcid ){
+				;already login
+				log("login done!")
+				return 1
+			
+			}else{
+				;relogin
+				mouseClick, left, 201,18
+				Sleep 200
+				mouseClick, left, 95,216
+				Sleep 400
+				mouseClick, left,174,159
+				
+				return this.loginTGP(account, passfile)
+			}
 		
-			mouseClick , left,-157,223
-		
+		}else if (currntState == 3){
+			log("loginTGP state  3 @ minimized")
+			WinRestore   % TGP.login_ahkclass
+			sleep 500
+			return this.loginTGP(account, passfile)
 		}
 	
 	}

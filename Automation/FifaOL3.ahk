@@ -98,19 +98,22 @@ class PASSWORD
 		tempfileO := workingDirectory . "xxxxxxtempoxxxx"
 		
 		com := this.cryptTool " enc -aes128  -d -in " tempfile " -out " tempfileO " -k volcano"
-		;MsgBox % com
+		;log("commond: " com)
 		run % com
+		Sleep 1000
 		str := ""
 		file := FileOpen(tempfileO, "rw")
 		str := file.read()
 		file.Close()
+		Sleep 400
 		;for security
 		file := FileOpen(tempfileO, "w")
 		file.write("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 		file.Close()
+		Sleep 400
 		;MsgBox % str
 		FileDelete, % tempfileO
-	
+		log(str)
 		return str
 	}
 
@@ -210,8 +213,13 @@ class TGP
 				isPasswordDone = 1
 			}else{
 				
-				pas =: PASSWORD.decrypt(passfile)
-				log("input password ".pas)
+				pas := PASSWORD.decrypt(passfile)
+				MouseClick, left,314,119
+				sleep 300
+				SetKeyDelay , 80
+				SendPlay , %pas% ;!!!
+				sleep 300
+				isPasswordDone = 1
 			}
 			
 			if (isPasswordDone){
@@ -258,7 +266,7 @@ class TGP
 				mouseClick, left, 95,216
 				Sleep 400
 				mouseClick, left,174,159
-				sleep 500
+				sleep 3000
 				return this.loginTGP(account, passfile)
 			}
 		

@@ -116,7 +116,9 @@ class TGP
 			;run to login stage
 			sleep 1000
 			this.loginTGP(account, passfile)
+			
 		}else if (this.getState() == 1){
+			
 			;MsgBox stage login
 			;splshow ("in")
 			sleep 1000

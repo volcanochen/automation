@@ -1,8 +1,7 @@
 #SingleInstance force
 
 
-#Include C:\Users\volcano\git\fifaOnlineScript\Automation\common\common.ahk
-
+#Include %A_ScriptDir%\common\common.ahk
 
 ; ------ 0001 -------
 ; Assign Ctrl-Alt-R as a hotkey to restart the script.

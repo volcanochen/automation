@@ -35,16 +35,13 @@
 }
 #q::
 {
-
-
-	win := TGP.login_ahkclass
-	WinWait, % win , , 10
-	if ErrorLevel
-	{
-		log("WinWait timed out for " win)
+	while 1 {
+	
+		Send, {esc}
+		sleep 2000
 	}
-	log("wait suc")
-	return
+
+	
 
 }
 

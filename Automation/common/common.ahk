@@ -139,8 +139,26 @@ shadowClick(X, Y)
     BlockInput  MouseMoveOff
 }
 
+;========================================
+;change title
+;eg. changeTile("ahk_class SciTEWindow", "xxxxxxxxxx")
+;========================================
+changeTile(title, newTitle)
+{
+	WinActivate, %title%
 
+	WinSetTitle, %title%, , %newTitle%
+}
 
+;========================================
+;get pid 
+;eg. MsgBox % getPID("ahk_class SciTEWindow")
+;========================================
+getPID(title)
+{
+	WinGet, rt, PID, %title%
+	return rt
+}
 
 
 

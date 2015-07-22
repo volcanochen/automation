@@ -25,7 +25,7 @@
 }
 #q::
 {
-	testahk = "C:\+work\CODES\fifaOnlineScript\Automation\test.ahk"
+	testahk = "C:\+work\CODES\fifaOnlineScript\Automation\test2.ahk"
 	runAhkScript(testahk)
 	return
 }

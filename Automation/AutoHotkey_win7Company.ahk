@@ -29,6 +29,10 @@
 	runAhkScript(testahk)
 	return
 }
+;Hotkey, IfWinActive, ahk_class LyncConversationWindowClass
+;#IfWinActive, ahk_class LyncConversationWindowClass
+;Hotkey, {Escape}, MsgBox You 
+
 
 
 

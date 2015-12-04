@@ -12,7 +12,7 @@
     Gui, Add, GroupBox, x12 y12 w210 h180 , system function
 
     
-    Gui, Add, Edit, x240 y12 w470 h350 R20 vMyEdit, Edit
+    Gui, Add, Edit, x240 y12 w470 h350 R20 vMyEdit ReadOnly, Edit
     GuiControl,, MyEdit, 
     
     ;====== display ========
@@ -52,10 +52,26 @@ updateText(text){
     GuiControl,, MyEdit, %text%
 }
 appendText(text){
+
+    ; get and append
     GuiControlGet, CtrlContents,, MyEdit
-    GuiControl,, MyEdit, %CtrlContents%%text%
+    GuiControl,, MyEdit, %CtrlContents%%text% 
     
-    file  = 
-    Run, %file%
     
+    text = %CtrlContents%
+    
+    ;text := "dfadfa`nsdfa`nsdf"
+    ;scroll down to input
+    word_array := StrSplit(text,"`n")
+    alen := word_array.MaxIndex() - 17
+    ;slen := floor(StrLen(CtrlContents) / 4) - 17
+    
+    ;GuiControlGet, CtrlContents,, MyEdit
+    ;GuiControl,, MyEdit, %CtrlContents% %alen%
+    
+    Loop %alen%  ; <-- Increase this value to scroll faster.
+        SendMessage, 0x115, 1, 0, Edit1 
+        ;WM_VSCROLL = 0x115 and the 0 after it is down.
+    return
+
 }

@@ -8,8 +8,15 @@
 ;========================= main =====================================
 name = control panel
 version = 20151207
+getDateString(){
 
-FileName := "C:\+work\CODES\fifaOnlineScript_clone\Automation\textFile"
+    FormatTime, TimeString, , yyMM
+    ;MsgBox The specified date and time, when formatted, is %TimeString%.
+    
+    return TimeString
+
+}
+FileName := "C:\+work\CODES\fifaOnlineScript_clone\Automation\" . getDateString()
 
 modifierState := 0
 modifierText := "___"
@@ -144,6 +151,7 @@ Gui, Add, Button,   x%x2%   y%y%   w%bttn_w%   h%bttn_h%       gF_modifier  vMyM
 ;=====================================================================
 F_000:
     handleButton("000`r`n")
+
     return
 F_112:
     handleButton("112`r`n")
@@ -206,7 +214,9 @@ GuiClose:
         Sleep 500  ; It's quite sensitive to this value; altering it may change the behavior in unexpected ways.
     }
     return
-    
+
+
+
 handleButton(text){
     global modifierState
     if (modifierState = 0){

@@ -19,7 +19,8 @@
 ;
 #z::
 {
-	path = "%ProgramFiles%/Everything/Everything.exe"
+	;path = "%ProgramFiles%/Everything/Everything.exe"
+	path = "C:/VOLCANO/fastAccess/program/Everything/Everything.exe"
 	showAndHideProgram("Everything",path)
 	return
 
@@ -34,10 +35,12 @@
 }
 ^!f::
 {
-	testahk = "C:\Users\volcano\git\fifaOnlineScript\Automation\FifaOL3.ahk"
+	testahk = %A_ScriptDir%\FifaOL3.ahk
 	runAhkScript(testahk)
 	return
 }
+
+
 
 
 

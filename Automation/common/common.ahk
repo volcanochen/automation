@@ -138,7 +138,35 @@ shadowClick(X, Y)
 
     BlockInput  MouseMoveOff
 }
+windowsClick(processid, X, Y)
+{
+    ;in case user is using mouse
+    keywait LButton
+    keywait RButton
+    
+    
+    CoordMode, Mouse, Screen
+    SendMode Input
+    
+    ;stop user moving
+    BlockInput  MouseMove
+	
+    ; for restore
+    MouseGetPos, OutputVarX, OutputVarY, MouseWin, OutputVarControl
+    winGet,active_win_ID ,ID, A
+    
+	
+	WinActivate, ahk_id %processid%
+	
+    ;action
+    MouseClick , left , X, Y, 1, 0
+    
+    ;restore
+    WinActivate, ahk_id %active_win_ID%
+    MouseMove, OutputVarX, OutputVarY, 0
 
+    BlockInput  MouseMoveOff
+}
 ;========================================
 ;change title
 ;eg. changeTile("ahk_class SciTEWindow", "xxxxxxxxxx")

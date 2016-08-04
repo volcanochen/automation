@@ -1,38 +1,76 @@
 #SingleInstance force
 
 #Include %A_ScriptDir%\common\common.ahk
+#Include %A_ScriptDir%\Accounts.ahk
 
-
+^+~::
+{
+	log("[fifa ol 3] crtl + shift + ~  loginTGP ")
+	TGP.loginTGP(0)
+	return
+}
 ^+1::
 {
-	log(" crtl + shift +1  loginTGP ")
-	TGP.loginTGP(MY_ACCOUNT.account1,MY_ACCOUNT.cipherPassFile2)
+	log("[fifa ol 3] crtl + shift +1  loginTGP ")
+	TGP.loginTGP(1)
 	return
 }
 ^+2::
 {
-	log(" crtl + shift +2  loginTGP ")
-	TGP.loginTGP(MY_ACCOUNT.account2,MY_ACCOUNT.cipherPassFile3)
+	log("[fifa ol 3]  crtl + shift +2  loginTGP ")
+	TGP.loginTGP(2)
 	return
 }
 ^+3::
 {
-	log(" crtl + shift +3  loginTGP ")
-	TGP.loginTGP(MY_ACCOUNT.account3,MY_ACCOUNT.cipherPassFile1)
+	log("[fifa ol 3]  crtl + shift +3  loginTGP ")
+	TGP.loginTGP(3)
 	return
 }
 ^+4::
 {
-	log(" crtl + shift +4  loginTGP ")
-	TGP.loginTGP(MY_ACCOUNT.account4,MY_ACCOUNT.cipherPassFile1)
+	log("[fifa ol 3]  crtl + shift +4  loginTGP ")
+	TGP.loginTGP(4)
 	return
 }
 ^+5::
 {
-	log(" crtl + shift +5  loginTGP ")
-	TGP.loginTGP(MY_ACCOUNT.account5,MY_ACCOUNT.cipherPassFile1)
+	log("[fifa ol 3]  crtl + shift +5  loginTGP ")
+	TGP.loginTGP(5)
 	return
 }
+^+6::
+{
+	log("[fifa ol 3]  crtl + shift +6  loginTGP ")
+	TGP.loginTGP(6)
+	return
+}
+^+8::
+{
+	log("[fifa ol 3]  crtl + shift +8  loginTGP ")
+	TGP.loginTGP(8)
+	return
+}
+^+9::
+{
+	log("[fifa ol 3]  crtl + shift +9  loginTGP ")
+	TGP.loginTGP(9)
+	return
+}
+^+c::
+{
+	log("[fifa ol 3]  crtl + shift + c  get color code ")
+	PictureRecognizeTool.getCid(TGP.login_ahkclass, 1)
+	return
+}
+^!g::
+{
+	testahk = %A_ScriptDir%\att.ahk
+	runAhkScript(testahk)
+	return
+}
+
+
 #q::
 {
 	while 1 {
@@ -40,87 +78,11 @@
 		Send, {esc}
 		sleep 2000
 	}
-
-	
-
 }
-
-class MY_ACCOUNT
-{
-	static account1 := "45376928"
-	static account2 := "798010623"
-	static account3 := "2926133917"
-	static account4 := "2990124579"
-	static account5 := "3252739241"
-	static cipherPassFile1 := "password1" ; for minor account
-	static cipherPassFile2 := "password2" ; for 4537
-	static cipherPassFile3 := "password3" ; for 7980
-	static Account1_figure_cid := "0xFEFEFE 0xEDE7E0"
-	static Account2_figure_cid := "0x65ABE7 0x7EB7E4"
-	static Account3_figure_cid := "0x2574B3 0xBDBEC2"
-	static Account4_figure_cid := "0x070A0F 0x0B1527"
-	static Account5_figure_cid := "0x4C759C 0x5F88AF"
-
-
-	getCID(name){
-		;MsgBox % " " name
-		if (name == MY_ACCOUNT.account1){
-			return MY_ACCOUNT.Account1_figure_cid
-		}
-		if (name == MY_ACCOUNT.account2){
-			return MY_ACCOUNT.Account2_figure_cid
-		}
-		if (name == MY_ACCOUNT.account3){
-			return MY_ACCOUNT.Account3_figure_cid
-		}
-		if (name == MY_ACCOUNT.account4){
-			return MY_ACCOUNT.Account4_figure_cid
-		}
-		if (name == MY_ACCOUNT.account5){
-			return MY_ACCOUNT.Account5_figure_cid
-		}
-	 return
-	}
-}
-
-class PASSWORD
-{
-	
-	static cryptTool := "D:\+downs\crypt_file\openssl.exe"
-	
-	decrypt(cipherPassFile1)
-	{
-		workingDirectory := "C:\Users\volcano\git\fifaOnlineScript\Automation\"
-		tempfile := workingDirectory . cipherPassFile1
-		tempfileO := workingDirectory . "xxxxxxtempoxxxx"
-		
-		com := this.cryptTool " enc -aes128  -d -in " tempfile " -out " tempfileO " -k volcano"
-		;log("commond: " com)
-		run % com
-		Sleep 1000
-		str := ""
-		file := FileOpen(tempfileO, "rw")
-		str := file.read()
-		file.Close()
-		Sleep 400
-		;for security
-		file := FileOpen(tempfileO, "w")
-		file.write("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-		file.Close()
-		Sleep 400
-		;MsgBox % str
-		FileDelete, % tempfileO
-		log(str)
-		return str
-	}
-
-
-}
-
 
 class TGP
 {
-	static path := "D:\Program Files\Tencent\TGP\tgp_daemon.exe"
+	static path := "C:\Program Files (x86)\Tencent\TGP\tgp_daemon.exe"
 	static title := "腾讯游戏平台"
 	static login_ahkclass := "ahk_class TWINCONTROL"
 	
@@ -162,14 +124,17 @@ class TGP
 			}
 			if (Height == TGP.min_h){
 				return 3
+			}else if (Height != 0){
+				return 4
 			}
 		}
 		return 0
 	}
 	
-	loginTGP(account, passfile)
+	loginTGP(aid)
 	{
-
+		account := MY_ACCOUNT.getAccount(aid)
+		log("account  " account)
 		currntState := this.getState()
 		if ( currntState == 0)
 		{
@@ -177,13 +142,13 @@ class TGP
 			run % TGP.path
 			
 			sleep 1000
-			return this.loginTGP(account, passfile)
+			return this.loginTGP(aid)
 		}else if (currntState == 1){
 			log("loginTGP state  1 @ login screen")
 		
 			WinActivate  % TGP.login_ahkclass
 			
-			passControl := "ahk_class Edit"
+			passControl := "ahk_exe TASLogin.exe"
 			WinWait, %passControl% , , 60
 			if ErrorLevel
 			{
@@ -199,17 +164,16 @@ class TGP
 			sleep 1000
 			mouseClick , left,6,-34,2
 			sleep 1000
-			send , %account%
+			send , %account%  ;input account
 			sleep 500
 			
 			isPasswordDone := 0
 			PixelGetColor,OutputVar , 314,119
-			
 			if (OutputVar == "0xFFFFFF"){
 				log("pass existd")
 				isPasswordDone = 1
 			}else{
-				
+				passfile = ""
 				pas := PASSWORD.decrypt(passfile)
 				MouseClick, left,314,119
 				sleep 300
@@ -228,7 +192,7 @@ class TGP
 				{
 					log("WinWait timed out for ".win)
 				}
-				return this.loginTGP(account, passfile)
+				return this.loginTGP(aid)
 			}
 
 		}else if (currntState == 2){
@@ -244,34 +208,40 @@ class TGP
 			}
 			
 			;mouseClick , left,130,250
-	
-			PixelGetColor,OutputVar , 15,61
-			PixelGetColor,OutputVar2 , 18,61
-			cid := % OutputVar " " OutputVar2
-			tcid :=  MY_ACCOUNT.getCID(account)
-			if (  cid == tcid ){
-				
+			if (MY_ACCOUNT.verifyCID(TGP.login_ahkclass, aid)){
 				;already login
+
+				WinMove, % TGP.login_ahkclass, , 1600, 40
 				log("login done!")
 				return 1
-			
 			}else{
-				log("Relogin ("  cid  " != " tcid ")")
+				log("Relogin")
 				;
 				mouseClick, left, 201,18
 				Sleep 200
 				mouseClick, left, 95,216
 				Sleep 400
-				mouseClick, left,174,159
-				sleep 3000
-				return this.loginTGP(account, passfile)
+				
+				;this is a confirm exit screen
+				mouseClick, left,291,173
+				
+				return this.loginTGP(aid)
 			}
 		
 		}else if (currntState == 3){
 			log("loginTGP state  3 @ minimized")
 			WinRestore   % TGP.login_ahkclass
 			sleep 500
-			return this.loginTGP(account, passfile)
+			return this.loginTGP(aid)
+		}else if (currntState == 4){
+			log("loginTGP state  4 @ other windows")
+			WinActivate   % TGP.login_ahkclass
+			;WinGetPos , X, Y, Width, Height, % TGP.login_ahkclass
+			
+		    ;WinMove, % TGP.login_ahkclass , , 1350 , 105
+			mouseClick, left, 293, 17
+			sleep 500
+			return this.loginTGP(aid)
 		}
 	
 	}
@@ -280,87 +250,6 @@ class TGP
 
 }
 
-threadswitch()
-{
-
-	CoordMode, Mouse, Screen  ; 
-  while(1)
-  {
-	  click 1137,37
-    	   sleep 20000
-
-	  click 1505,139
-    	   sleep 20000
-
-	  click 1872,248
-    	   sleep 20000
-  }	
-
-}
-
-buy()
-{
-
-  while(1)
-  {
-	  click 1085,518
-    	   sleep 100
-
-	  click 614,521
-    	   sleep 100
-
-	  click 742,791
-    	   sleep 200
-
-	  click 742,791
-    	   sleep 100
-  }
-}
-
-dafuweng()
-{
-
-  while(1)
-  {
-	  click 1085,518
-    	   sleep 100
-
-	  click 614,521
-    	   sleep 100
-
-	  click 742,791
-    	   sleep 200
-
-	  click 742,791
-    	   sleep 100
-  }
-}
-
-test()
-{
-  while(1)
-  {
-	  click 1085,518
-    	   sleep 100
-
-	  click 614,521
-    	   sleep 100
-
-	  click 742,791
-    	   sleep 200
-
-	  click 742,791
-    	   sleep 100
-
-	  ;WinGet, active_id, PID, ahk_class FIFANG
-;SendPlay Joy1 
-;ControlSend ,active_id,Joy1,,,,
-
-
-	}
-
-
-}
 
 ;============================================================================
 ;  -------  8001 -------

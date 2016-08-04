@@ -83,7 +83,7 @@
 class TGP
 {
 	static path := "C:\Program Files (x86)\Tencent\TGP\tgp_daemon.exe"
-	static title := "腾讯游戏平台"
+	static title := "鑵捐娓告垙骞冲彴"
 	static login_ahkclass := "ahk_class TWINCONTROL"
 	
 	;login stage
@@ -263,7 +263,7 @@ class TGP
 globalDef()
 {
 	global fifaWinName 
-	fifaWinName  := "FIFA Online 3登录程序"
+	fifaWinName  := "FIFA Online 3鐧诲綍绋嬪簭"
 	global account1 := "45376928"
 	global pass1 := ""
 	global pid1 :=  0
@@ -286,7 +286,7 @@ return
 loginViaTGP()
 {
 	tgpPath = "D:\Program Files\Tencent\TGP\tgp_daemon.exe"
-	tgpPath_pre_title = "腾讯游戏平台"
+	tgpPath_pre_title = "鑵捐娓告垙骞冲彴"
 	tgpPreWin_ahkclass = ahk_class TWINCONTROL
 	tgpPrePasswordControl_ahkclass = ahk_class Edit
 	

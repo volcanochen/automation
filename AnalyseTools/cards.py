@@ -21,6 +21,7 @@ class rawFileHandle:
         content = ''
         for f in fileList:
             try:
+                f = 'data/' + f
                 fsourceFile = open(f)
                 content += fsourceFile.read()
                 #print(content)
